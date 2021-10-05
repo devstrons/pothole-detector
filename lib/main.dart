@@ -12,8 +12,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
+  /// Control and access the map with [mapController].
   late GoogleMapController mapController;
- final Set<Marker> _markers = {};
+
+  /// Set of [Marker] which is shown on map.
+  final Set<Marker> _markers = {};
+  
+  /// Object which stores the image to make into a [Marker].
   late BitmapDescriptor mapMarker;
 
   @override
@@ -22,17 +28,19 @@ class _MyAppState extends State<MyApp> {
     setCustomMarker();
   }
 
+  /// Convert the [AssetImage] to [BitmapDescriptor]
   void setCustomMarker() async {
     mapMarker = await BitmapDescriptor.fromAssetImage(
-     const ImageConfiguration(),
+      const ImageConfiguration(),
       'image/marker.png',
     );
   }
 
   void _onMapCreated(GoogleMapController controller) {
     setState(() {
+      /// Add the first [Marker] to the set.
       _markers.add(Marker(
-        markerId:const MarkerId("Pot hole here"),
+        markerId: const MarkerId("Pot hole here"),
         icon: mapMarker,
         position: _center,
       ));
@@ -40,6 +48,7 @@ class _MyAppState extends State<MyApp> {
     mapController = controller;
   }
 
+  /// The location of delhi
   final LatLng _center = const LatLng(
     28.65,
     77.23,
