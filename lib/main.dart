@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 // import 'package:flutter/rendering.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:pothole_dectector/drawer.dart';
 
 void main() => runApp(const MyApp());
 
@@ -126,10 +127,11 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Pothole'),
-          backgroundColor: Colors.green[700],
+          backgroundColor: Colors.deepPurple,
         ),
         body: Stack(
           children: [
@@ -146,12 +148,16 @@ class _MyAppState extends State<MyApp> {
               bottom: 50,
               right: 10,
               child: FloatingActionButton(
+                hoverColor: Colors.amberAccent,
+                backgroundColor: Colors.red,
+                splashColor: Colors.indigo,
                 onPressed: add_marker,
                 child: Icon(Icons.add),
               ),
             ),
           ],
         ),
+        drawer: MyDrawer(),
       ),
     );
   }
