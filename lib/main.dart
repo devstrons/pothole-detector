@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 // import 'package:flutter/rendering.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 
 void main() => runApp(const MyApp());
 
@@ -20,6 +21,10 @@ class _MyAppState extends State<MyApp> {
 
   /// Object which stores the image to make into a [Marker].
   late BitmapDescriptor mapMarker;
+
+  Location location = Location();
+  late LocationData _currentPosition;
+  LatLng _initialcameraposition = LatLng(0.5937, 0.9629);
 
   @override
   void initState() {
@@ -45,6 +50,24 @@ class _MyAppState extends State<MyApp> {
       ));
     });
     mapController = controller;
+
+    LatLng current_pos;
+    location.onLocationChanged.listen((l) {
+      current_pos = LatLng(l.latitude!, l.longitude!);
+      mapController.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(target: LatLng(l.latitude!, l.longitude!), zoom: 15),
+        ),
+      );
+    });
+    setState(() {
+      /// Add the first [Marker] to the set.
+      _markers.add(Marker(
+        markerId: const MarkerId("Pot hole here"),
+        icon: mapMarker,
+        position: _center,
+      ));
+    });
   }
 
   /// The location of delhi
@@ -68,6 +91,44 @@ class _MyAppState extends State<MyApp> {
       icon: mapMarker,
       position: _marker_pos,
     ));
+  }
+
+  getLoc() async {
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+
+    /// Check if location is enabled
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+
+    /// Check if location permission is given
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    /// Get current position on map
+    _currentPosition = await location.getLocation();
+    _initialcameraposition =
+        LatLng(_currentPosition.latitude!, _currentPosition.longitude!);
+
+    /// Update [_currentPosition] when changed
+    location.onLocationChanged.listen((LocationData currentLocation) {
+      print("${currentLocation.longitude} : ${currentLocation.longitude}");
+      setState(() {
+        _currentPosition = currentLocation;
+        _initialcameraposition =
+            LatLng(_currentPosition.latitude!, _currentPosition.longitude!);
+      });
+    });
   }
 
   @override
