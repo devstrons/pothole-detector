@@ -60,14 +60,6 @@ class _MyAppState extends State<MyApp> {
         ),
       );
     });
-    setState(() {
-      /// Add the first [Marker] to the set.
-      _markers.add(Marker(
-        markerId: const MarkerId("Pot hole here"),
-        icon: mapMarker,
-        position: _center,
-      ));
-    });
   }
 
   /// The location of delhi
