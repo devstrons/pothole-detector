@@ -12,13 +12,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   /// Control and access the map with [mapController].
   late GoogleMapController mapController;
 
   /// Set of [Marker] which is shown on map.
   final Set<Marker> _markers = {};
-  
+
   /// Object which stores the image to make into a [Marker].
   late BitmapDescriptor mapMarker;
 
@@ -54,6 +53,23 @@ class _MyAppState extends State<MyApp> {
     77.23,
   );
 
+  /// Puts a marker at the current map location
+  ///
+  /// Warning: Not on the physical current location
+  void add_marker() async {
+    LatLng _marker_pos = await mapController
+        .getLatLng(ScreenCoordinate(
+          x: 500,
+          y: 1000,
+        ))
+        .then((value) => value);
+    _markers.add(Marker(
+      markerId: MarkerId("${_markers.length}"),
+      icon: mapMarker,
+      position: _marker_pos,
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -62,14 +78,26 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Pothole'),
           backgroundColor: Colors.green[700],
         ),
-        body: GoogleMap(
-          onMapCreated: _onMapCreated,
-          initialCameraPosition: CameraPosition(
-            target: _center,
-            zoom: 11.0,
-          ),
-          buildingsEnabled: true,
-          markers: _markers,
+        body: Stack(
+          children: [
+            GoogleMap(
+              onMapCreated: _onMapCreated,
+              initialCameraPosition: CameraPosition(
+                target: _center,
+                zoom: 11.0,
+              ),
+              buildingsEnabled: true,
+              markers: _markers,
+            ),
+            Positioned(
+              bottom: 50,
+              right: 10,
+              child: FloatingActionButton(
+                onPressed: add_marker,
+                child: Icon(Icons.add),
+              ),
+            ),
+          ],
         ),
       ),
     );
