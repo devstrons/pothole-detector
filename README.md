@@ -1,5 +1,5 @@
 # pothole-detector
-![python](https://img.shields.io/badge/Flutter-03589b?logo=flutter)  
+![flutter](https://img.shields.io/badge/Flutter-03589b?logo=flutter)  
 
 Detecting potholes using a smartphone app, & display the data to users over maps (google or open-street) through a app.  
 In future, the service could be used to create an open map of road conditions, for example in India.  
